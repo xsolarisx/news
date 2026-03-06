@@ -1,0 +1,8 @@
+aiohttp>=3.9
+feedparser>=6.0
+rich>=13.0
+langdetect>=1.0
+anthropic>=0.25
+requests>=2.31
+# tomli is only needed on Python < 3.11 (stdlib tomllib is used on 3.11+)
+tomli>=2.0; python_version < "3.11"

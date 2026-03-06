@@ -1,0 +1,34 @@
+# news-digest.timer — systemd timer that triggers news-digest.service
+# Fires twice daily at 06:00 and 18:00 local time.
+# If the system was off or the timer was missed, it will catch up on next boot
+# (Persistent=true).
+
+[Unit]
+Description=News Digest Generator — Daily Timer (06:00 and 18:00)
+Documentation=file:///opt/news-digest/
+# Ensure the matching service unit is present before activating.
+Requires=news-digest.service
+
+[Timer]
+# Run at 06:00 local time every day.
+OnCalendar=*-*-* 06:00:00
+# Run again at 18:00 local time every day.
+OnCalendar=*-*-* 18:00:00
+
+# Use local wall-clock time (respects the system timezone / DST).
+# Remove this line to use UTC instead.
+LocalTimeZone=true
+
+# If the timer was missed (system was off), trigger the service as soon as
+# the system comes back up, rather than waiting until the next scheduled time.
+Persistent=true
+
+# Add a small random delay (up to 60 s) to avoid thundering-herd if many
+# containers fire at exactly the same second.
+RandomizedDelaySec=60
+
+# Keep the last invocation result visible via `systemctl status`.
+Unit=news-digest.service
+
+[Install]
+WantedBy=timers.target

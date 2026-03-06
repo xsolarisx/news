@@ -1,0 +1,53 @@
+# News Digest Configuration
+# All values shown are the defaults. Uncomment and edit as needed.
+
+[digest]
+max_per_category    = 8          # default max stories per category
+width               = 88         # terminal output width (chars)
+similarity_threshold = 0.5       # Jaccard threshold for same-story dedup (0.0–1.0)
+cache_ttl_minutes   = 30         # how long to reuse cached feed responses
+cache_path          = "~/.cache/news_digest.db"
+
+# Per-category overrides (uncomment to activate)
+# [digest.cat_limits]
+# "Tech" = 10
+# "World" = 12
+
+# ── Output ────────────────────────────────────────────────────────────────────
+[output]
+# default_mode: terminal | html | markdown
+default_mode = "terminal"
+output_dir   = "~/news-output"   # used when --output-file is not specified
+
+# ── Email delivery ────────────────────────────────────────────────────────────
+[email]
+enabled       = false
+smtp_host     = "smtp.gmail.com"
+smtp_port     = 587
+smtp_user     = ""               # set via env: SMTP_USER
+smtp_password = ""               # set via env: SMTP_PASSWORD
+from_addr     = ""
+to_addrs      = []               # e.g. ["you@example.com", "team@example.com"]
+subject       = "Daily News Digest"
+
+# ── AI features ───────────────────────────────────────────────────────────────
+[ai]
+translation_model  = "gpt-4o-mini"              # OpenAI model for translation
+summary_model      = "claude-haiku-4-5-20251001" # Claude model for exec summaries
+enable_translation = true    # requires OPENAI_API_KEY
+enable_ai_summary  = false   # requires ANTHROPIC_API_KEY — set true to enable
+enable_sentiment   = true    # keyword-based, no API needed
+
+# ── Feed overrides ────────────────────────────────────────────────────────────
+# Uncomment and extend to add or replace feeds.
+# Built-in feeds are used if no [[feeds]] entries are present.
+#
+# [[feeds]]
+# name     = "BBC"
+# url      = "http://feeds.bbci.co.uk/news/rss.xml"
+# language = "en"
+#
+# [[feeds]]
+# name     = "Le Monde"
+# url      = "https://www.lemonde.fr/rss/une.xml"
+# language = "fr"

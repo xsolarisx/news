@@ -1,0 +1,56 @@
+# news-digest.service — one-shot systemd service for the daily news digest
+# Managed by news-digest.timer; do not start this unit directly in production.
+
+[Unit]
+Description=News Digest Generator
+Documentation=file:///opt/news-digest/
+# Wait for a usable network before running so that API calls succeed.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+
+# ---- Security / user context ------------------------------------------------
+User=newsdigest
+Group=newsdigest
+
+# Working directory — relative paths in the script resolve here
+WorkingDirectory=/opt/news-digest
+
+# ---- Environment ------------------------------------------------------------
+# Secrets and configuration are stored outside the unit file so that
+# they are not exposed via `systemctl cat` or version control.
+EnvironmentFile=/etc/news-digest/env
+
+# ---- Execution --------------------------------------------------------------
+ExecStart=/opt/news-digest/venv/bin/python3 \
+    /opt/news-digest/news_digest.py \
+    --output html \
+    --output-file /opt/news-digest/output/digest.html
+
+# ---- Logging ----------------------------------------------------------------
+# Tag all log lines with "news-digest" so they are easy to filter:
+#   journalctl -t news-digest
+#   journalctl -u news-digest.service
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=news-digest
+
+# ---- Resource limits --------------------------------------------------------
+# Prevent runaway processes from consuming excessive CPU or memory.
+TimeoutStartSec=300
+MemoryMax=512M
+CPUQuota=80%
+
+# ---- Hardening (optional but recommended) -----------------------------------
+# Remove write access to most of the filesystem; the service only needs
+# to write to its own output directory and the log directory.
+ProtectSystem=strict
+ReadWritePaths=/opt/news-digest/output /var/log/news-digest
+ProtectHome=true
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
