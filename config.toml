@@ -6,7 +6,7 @@ max_per_category    = 8          # default max stories per category
 width               = 88         # terminal output width (chars)
 similarity_threshold = 0.5       # Jaccard threshold for same-story dedup (0.0–1.0)
 cache_ttl_minutes   = 30         # how long to reuse cached feed responses
-cache_path          = "~/.cache/news_digest.db"
+cache_path          = "/opt/news-digest/.cache/news_digest.db"
 
 # Per-category overrides (uncomment to activate)
 # [digest.cat_limits]
